@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeoScorePose | 3D Object Pose Estimation</title>
+<meta name="description" content="GeoScorePose: Geometry-Aware Score-Based Diffusion for Probabilistic Single-Image 3D Object Pose Estimation.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #080d19;
+    --card: #101a2c;
+    --blue: #5b9dff;
+    --cyan: #58d6e8;
+    --text: #eaf1ff;
+    --muted: #9baac3;
+    --border: rgba(255,255,255,0.09);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.7;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
+/* NAVIGATION */
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(8,13,25,0.88);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border);
+}
+.nav-container {
+    max-width: 1150px;
+    margin: auto;
+    padding: 17px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo {
+    font-family: 'Space Grotesk';
+    font-size: 23px;
+    font-weight: 700;
+    color: white;
+}
+.logo span {
+    color: var(--blue);
+}
+.nav-links {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    color: var(--muted);
+}
+.nav-links a:hover {
+    color: var(--cyan);
+}
+/* HERO */
+.hero {
+    min-height: 610px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(45,105,210,0.25), transparent 65%);
+}
+.hero-content {
+    max-width: 950px;
+}
+.tag {
+    display: inline-block;
+    padding: 7px 16px;
+    border: 1px solid rgba(91,157,255,0.35);
+    background: rgba(91,157,255,0.08);
+    border-radius: 30px;
+    color: var(--cyan);
+    font-size: 12px;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+}
+.hero h1 {
+    font-family: 'Space Grotesk';
+    font-size: clamp(48px, 8vw, 82px);
+    font-weight: 700;
+    letter-spacing: -3px;
+    margin-bottom: 18px;
+}
+.hero h1 span {
+    background: linear-gradient(90deg, #67aaff, #5ee1e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero h2 {
+    max-width: 850px;
+    margin: auto;
+    font-size: clamp(17px, 2.5vw, 23px);
+    font-weight: 500;
+    line-height: 1.5;
+    color: #c5d2e8;
+}
+.authors {
+    margin-top: 30px;
+    color: var(--cyan);
+    font-size: 15px;
+}
+.affiliation {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 14px;
+}
+.buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 35px;
+}
+.btn {
+    padding: 12px 25px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+.btn-primary {
+    background: linear-gradient(90deg, #377fe5, #35b7ce);
+    color: white;
+}
+.btn-secondary {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    color: white;
+}
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(48,128,230,0.2);
+}
+/* COMMON SECTIONS */
+section {
+    padding: 85px 20px;
+}
+.container {
+    max-width: 1050px;
+    margin: auto;
+}
+.section-title {
+    font-family: 'Space Grotesk';
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+.section-subtitle {
+    color: var(--muted);
+    margin-bottom: 35px;
+    font-size: 15px;
+}
+.line {
+    width: 55px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    margin-bottom: 30px;
+}
+/* ABSTRACT */
+.abstract {
+    background: #0c1423;
+}
+.abstract-box {
+    background: linear-gradient(135deg, #111e33, #101827);
+    border: 1px solid var(--border);
+    padding: 35px;
+    border-radius: 12px;
+    color: #c5d2e8;
+    font-size: 15px;
+    text-align: justify;
+}
+.keywords {
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.keyword {
+    background: rgba(91,157,255,0.1);
+    color: #8ebcff;
+    border: 1px solid rgba(91,157,255,0.2);
+    border-radius: 5px;
+    padding: 7px 12px;
+    font-size: 12px;
+}
+/* CONTRIBUTIONS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 25px;
+    transition: 0.3s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(91,157,255,0.5);
+}
+.card h3 {
+    font-family: 'Space Grotesk';
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #8ebcff;
+}
+.card p {
+    font-size: 14px;
+    color: var(--muted);
+}
+/* METHOD */
+.method {
+    background: #0c1423;
+}
+.pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 40px;
+}
+.pipeline-item {
+    width: 165px;
+    min-height: 125px;
+    background: linear-gradient(145deg, #142640, #101a2c);
+    border: 1px solid rgba(91,157,255,0.3);
+    border-radius: 10px;
+    padding: 20px 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.pipeline-item strong {
+    color: var(--cyan);
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+.pipeline-item small {
+    color: var(--muted);
+    font-size: 12px;
+}
+.arrow {
+    font-size: 23px;
+    color: var(--blue);
+}
+/* MATHEMATICS */
+.math-box {
+    margin-top: 30px;
+    padding: 30px;
+    background: #101a2c;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-align: center;
+}
+.math-box h3 {
+    color: var(--cyan);
+    margin-bottom: 15px;
+}
+.equation {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    color: #e1ecff;
+    padding: 15px 0;
+}
+/* RESULTS */
+.results-box {
+    background: var(--card);
+    border: 1px dashed rgba(91,157,255,0.5);
+    border-radius: 12px;
+    padding: 45px 25px;
+    text-align: center;
+}
+.results-box h3 {
+    color: var(--cyan);
+    margin-bottom: 12px;
+}
+.results-box p {
+    color: var(--muted);
+    font-size: 14px;
+}
+/* PAPER */
+.paper {
+    background: #0c1423;
+}
+.paper-card {
+    background: linear-gradient(135deg, #13243c, #101827);
+    border: 1px solid var(--border);
+    padding: 35px;
+    border-radius: 12px;
+}
+.paper-card h3 {
+    font-family: 'Space Grotesk';
+    font-size: 21px;
+    margin-bottom: 15px;
+}
+.paper-card p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+/* FOOTER */
+footer {
+    border-top: 1px solid var(--border);
+    padding: 35px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+footer span {
+    color: var(--cyan);
+}
+/* RESPONSIVE */
+@media(max-width: 750px) {
+    .nav-links {
+        gap: 12px;
+        font-size: 11px;
+    }
+    .nav-container {
+        padding: 15px;
+    }
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    .pipeline {
+        flex-direction: column;
+    }
+    .arrow {
+        transform: rotate(90deg);
+    }
+    .abstract-box {
+        padding: 23px;
+        text-align: left;
+    }
+    .hero {
+        min-height: 550px;
+    }
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+    section {
+        padding: 65px 20px;
+    }
+}
+</style>
+</head>
+<body>
+<!-- NAVIGATION -->
+<nav>
+<div class="nav-container">
+
+GeoScorePose
+
+<div class="nav-links">
+<a href="#abstract">Abstract</a>
+<a href="#method">Method</a>
+<a href="#results">Results</a>
+<a href="#paper">Paper</a>
+</div>
+</div>
+</nav>
+<!-- HERO -->
+<header class="hero">
+<div class="hero-content">
+<div class="tag">3D COMPUTER VISION · PROBABILISTIC LEARNING</div>
+<h1>Geo<span>Score</span>Pose</h1>
+<h2>
+Geometry-Aware Score-Based Diffusion on SO(3)
+for Probabilistic Single-Image 3D Object Pose Estimation
+</h2>
+<div class="authors">
+Your Name
+</div>
+<div class="affiliation">
+Faculty of Computer Engineering<br>
+K. N. Toosi University of Technology
+</div>
+<div class="buttons">
+<a href="#abstract" class="btn btn-primary">
+Explore the Research ↓
+</a>
+<a href="#paper" class="btn btn-secondary">
+Read the Paper
+</a>
+</div>
+</div>
+</header>
+<!-- ABSTRACT -->
+<section class="abstract" id="abstract">
+<div class="container">
+<h2 class="section-title">Abstract</h2>
+<div class="line"></div>
+<div class="abstract-box">
+
+3D object pose estimation, including rotation and translation, is a fundamental problem in computer vision and robotics. However, visual ambiguity, occlusion, and geometric symmetry often make a single visual observation compatible with multiple plausible poses. Conventional deterministic approaches struggle to represent this inherent uncertainty.
+
+In this work, we present a probabilistic framework based on conditional score-based diffusion models for 3D object pose estimation. Rather than predicting a single pose, our approach models a distribution over candidate rotations.
+
+To preserve the geometric structure of the rotation space, the forward diffusion process is defined directly on the Special Orthogonal Group SO(3), using an isotropic Gaussian distribution. Visual features extracted by a ResNet-34 encoder and continuous matrix representations of rotation are incorporated into a conditional score network through cross-attention mechanisms and time embeddings.
+
+During inference, reverse-time sampling is performed using Euler–Maruyama discretization, with rotation updates implemented through group multiplication on the manifold.
+
+The proposed framework enables multimodal rotation estimation and explicit representation of pose uncertainty. Its performance is evaluated using geometric metrics, including geodesic error and threshold-based accuracy.
+
+<div class="keywords">
+<span class="keyword">3D Object Pose Estimation</span>
+<span class="keyword">Score-Based Diffusion</span>
+<span class="keyword">SO(3) Manifold</span>
+<span class="keyword">Probabilistic Learning</span>
+<span class="keyword">Pose Uncertainty</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CONTRIBUTIONS -->
+<section>
+<div class="container">
+<h2 class="section-title">Key Ideas</h2>
+<div class="line"></div>
+<p class="section-subtitle">
+The main components of our probabilistic pose estimation framework.
+</p>
+<div class="grid">
+<div class="card">
+<h3>01. Score-Based Diffusion</h3>
+<p>
+A conditional score network learns the underlying distribution of plausible object rotations instead of producing a single deterministic prediction.
+</p>
+</div>
+<div class="card">
+<h3>02. Geometric Consistency</h3>
+<p>
+Diffusion is performed directly on SO(3), respecting the geometric structure of the rotation manifold throughout the sampling process.
+</p>
+</div>
+<div class="card">
+<h3>03. Pose Uncertainty</h3>
+<p>
+Multiple reverse diffusion trajectories allow the framework to represent multimodal rotation distributions and quantify uncertainty.
+</p>
+</div>
+</div>
+</div>
+</section>
+<!-- METHOD -->
+<section class="method" id="method">
+<div class="container">
+<h2 class="section-title">Methodology</h2>
+<div class="line"></div>
+<p class="section-subtitle">
+Overview of the proposed GeoScorePose framework.
+</p>
+<div class="pipeline">
+<div class="pipeline-item">
+<strong>Input Image</strong>
+<small>Single RGB observation</small>
+</div>
+<div class="arrow">→</div>
+<div class="pipeline-item">
+<strong>ResNet-34</strong>
+<small>Visual feature extraction</small>
+</div>
+<div class="arrow">→</div>
+<div class="pipeline-item">
+<strong>Score Network</strong>
+<small>Cross-attention + time embedding</small>
+</div>
+<div class="arrow">→</div>
+<div class="pipeline-item">
+<strong>SO(3) Diffusion</strong>
+<small>Conditional score estimation</small>
+</div>
+<div class="arrow">→</div>
+<div class="pipeline-item">
+<strong>Reverse Sampling</strong>
+<small>Euler–Maruyama</small>
+</div>
+<div class="arrow">→</div>
+<div class="pipeline-item">
+<strong>Pose Distribution</strong>
+<small>Multiple candidate rotations</small>
+</div>
+</div>
+<div class="math-box">
+<h3>Geometric Rotation Representation</h3>
+<div class="equation">
+R ∈ SO(3)
+</div>
+<p style="color:#9baac3; font-size:14px;">
+Rotation matrices are constrained to the Special Orthogonal Group,
+preserving orthogonality and unit determinant.
+</p>
+</div>
+</div>
+</section>
+<!-- RESULTS -->
+<section id="results">
+<div class="container">
+<h2 class="section-title">Experimental Results</h2>
+<div class="line"></div>
+<p class="section-subtitle">
+Evaluation of geometric accuracy and probabilistic pose estimation.
+</p>
+<div class="results-box">
+<h3>Experimental Results Coming Soon</h3>
+<p>
+Quantitative comparisons, geodesic rotation errors,
+accuracy thresholds, and qualitative visualizations
+will be presented here.
+</p>
+</div>
+</div>
+</section>
+<!-- PAPER -->
+<section class="paper" id="paper">
+<div class="container">
+<h2 class="section-title">Research Paper</h2>
+<div class="line"></div>
+<div class="paper-card">
+<h3>
+GeoScorePose: Geometry-Aware Score-Based Diffusion on SO(3)
+for Probabilistic Single-Image 3D Object Pose Estimation
+</h3>
+<p>
+Bachelor of Science Thesis in Computer Engineering<br>
+Department of Computer Engineering<br>
+K. N. Toosi University of Technology
+</p>
+<div class="buttons" style="justify-content:flex-start;">
+<a href="#" class="btn btn-primary">
+Paper PDF
+</a>
+<a href="#" class="btn btn-secondary">
+Source Code
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<footer>
+<p>
+GeoScorePose · 3D Computer Vision Research
+</p>
+<p style="margin-top:8px;">
+Developed at <span>K. N. Toosi University of Technology</span>
+</p>
+<p style="margin-top:8px;">
+© 2026 GeoScorePose. All rights reserved.
+</p>
+</footer>
+</body>
+</html>
